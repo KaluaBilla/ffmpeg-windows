@@ -146,7 +146,7 @@ OTHER_FLAGS="-fvisibility=default -fPIC"
 export CFLAGS="-I${PREFIX1}/include -I${PREFIX2}/include $SIZE_CFLAGS $PERF_FLAGS $OTHER_FLAGS -D_FORTIFY_SOURCE=0 -DNDEBUG"
 export CXXFLAGS="$SIZE_CXXFLAGS $PERF_FLAGS $OTHER_FLAGS -DNDEBUG -D_FORTIFY_SOURCE=0"
 export CPPFLAGS="-I${PREFIX1}/include -I${PREFIX2}/include -DNDEBUG -fPIC -D_FORTIFY_SOURCE=0"
-export LDFLAGS="-static-libstc++ -static-libgcc -static -L${PREFIX1}/lib -L${PREFIX1}/lib64 -L${PREFIX2}/lib -L${PREFIX2}/lib64 $SIZE_LDFLAGS -fPIC"
+export LDFLAGS="-static-libstdc++ -static-libgcc -static -L${PREFIX1}/lib -L${PREFIX1}/lib64 -L${PREFIX2}/lib -L${PREFIX2}/lib64 $SIZE_LDFLAGS -fPIC"
 
 
 
@@ -485,7 +485,6 @@ download_sources
 prepare_sources
 apply_extra_setup
 init_cross_files
-: <<'IDK'
 ### Compression / crypto
 build_zlib
 build_lzo
@@ -542,7 +541,7 @@ build_libcodec2
 build_libbs2b
 #build_libgme #(didnt build)
 build_flite
-# build_libmodplug #(fucking same dll thing)
+# build_libmodplug #(dint build)
 build_liblc3
 
 ### Video codecs
@@ -606,8 +605,8 @@ build_openapv
 
 patch_ffmpeg
 
-IDK
-#find "$PREFIX" -iname "*.pc" -exec sed -i 's/\s*-ldl\b\s*/ /g' {} +
+
+find "$PREFIX" -iname "*.pc" -exec sed -i 's/\s*-ldl\b\s*/ /g' {} +
 find "$PREFIX" -iname "*.dll*" -delete
 build_ffmpeg
 
