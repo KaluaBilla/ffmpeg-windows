@@ -74,6 +74,8 @@ export STRINGS="${HOST}-strings"
 export OBJDUMP="${HOST}-objdump"
 export OBJCOPY="${HOST}-objcopy"
 export WINDRES="${HOST}-windres"
+export RC="${HOST}-windres"
+export RCFLAGS=""
 
 
 case "$ARCH" in
