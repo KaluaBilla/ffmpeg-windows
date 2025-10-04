@@ -1,5 +1,15 @@
 #!/bin/bash
 
+configure_amf() {
+	mkdir -p "$PREFIX/include/AMF"
+	cp -r "$BUILD_DIR/AMF/amf/public/include"/* "$PREFIX/include/AMF"/
+}
+
+configure_nv_headers() {
+	cp -r "$BUILD_DIR/nv-codec-headers/include/ffnvcodec" "$PREFIX/include"
+}
+
+
 build_zlib() {
 	echo "[+] Building zlib for $ARCH..."
 	cd "$BUILD_DIR/zlib" || exit 1
