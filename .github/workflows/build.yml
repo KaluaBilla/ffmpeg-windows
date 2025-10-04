@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [x86_64] 
+        arch: [x86_64]
       fail-fast: false
 
     steps:
@@ -53,6 +53,29 @@ jobs:
             yasm \
             mingw-w64
 
+      - name: Set up Rust  
+        uses: actions-rs/toolchain@v1  
+        with:  
+          toolchain: stable  
+          profile: minimal  
+          override: true  
+
+
+      - name: Install cargo-c
+        run: |
+          mkdir -p $HOME/.cargo/bin
+          curl -L https://github.com/lu-zero/cargo-c/releases/download/v0.10.16/cargo-c-x86_64-unknown-linux-musl.tar.gz -o /tmp/cargo-c.tar.gz
+          tar -xzf /tmp/cargo-c.tar.gz -C $HOME/.cargo/bin
+          chmod +x $HOME/.cargo/bin/cargo-c*
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.cargo/bin:$PATH"
+          cargo-cinstall --version
+          
+
+      - name: Add Rust Windows target
+        run: |
+          rustup target add x86_64-pc-windows-gnu
+
       - name: Set build environment
         run: |
           echo "ARCH=${{ matrix.arch }}" >> $GITHUB_ENV
@@ -60,6 +83,8 @@ jobs:
 
       - name: Run build.sh
         run: |
+          rm -rf ${{ github.workspace }}/out
+          mkdir -p ${{ github.workspace }}/out
           bash ${{ github.workspace }}/build.sh
         env:
           LATEST_GIT: 1
