@@ -18,40 +18,15 @@ jobs:
       - name: Install system dependencies and build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            autopoint \
-            libglib2.0-dev \
-            jq \
-            cmake \
-            ninja-build \
-            make \
-            autoconf \
-            automake \
-            libtool \
-            pkg-config \
-            texinfo \
-            gettext \
-            gperf \
-            bison \
-            flex \
-            git \
-            xz-utils \
-            unzip \
-            diffutils \
-            file \
-            findutils \
-            coreutils \
-            binutils \
-            python3 \
-            python3-pip \
-            python3-venv \
-            pipx \
-            subversion \
-            libtool-bin \
-            nasm \
-            yasm \
-            mingw-w64
+          sudo apt-get mingw-w64 install -y build-essential autopoint libglib2.0-dev jq cmake ninja-build make autoconf automake libtool pkg-config texinfo gettext gperf bison flex git xz-utils unzip diffutils file findutils coreutils binutils python3 python3-pip python3-venv pipx subversion libtool-bin nasm yasm
+
+      - name: Install pipx and meson
+        run: |
+          python3 -m pip install --user pipx
+          python3 -m pipx ensurepath
+          export PATH="$HOME/.local/bin:$PATH"
+          pipx install meson
+          meson --version
 
       - name: Set up Rust  
         uses: actions-rs/toolchain@v1  
