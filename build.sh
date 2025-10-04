@@ -611,3 +611,8 @@ find "$PREFIX" -iname "*.dll*" -delete
 build_ffmpeg
 
 echo "Build completed successfully"
+
+mkdir -p "${ROOT_DIR}/out"
+cp "${PREFIX}/bin/ffmpeg.exe" "${ROOT_DIR}/out"
+cp "${PREFIX}/bin/ffprobe.exe" "${ROOT_DIR}/out"
+
