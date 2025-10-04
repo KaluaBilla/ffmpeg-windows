@@ -63,13 +63,7 @@ build_lz4() {
 
 
 build_liblzma() {
-	autotools_build "liblzma" "$BUILD_DIR/xz" \
-	    --disable-nls \
-		--disable-werror \
-		CC="$CC_ABS" \
-		CFLAGS="$CFLAGS" \
-		CXXFLAGS="$CXXFLAGS" \
-		LDFLAGS="$LDFLAGS"
+	cmake_build "liblzma" "$BUILD_DIR/xz" "true"
 }
 
 build_zstd() {
