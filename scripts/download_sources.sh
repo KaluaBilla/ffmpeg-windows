@@ -117,6 +117,7 @@ declare -A GITHUB_REPOS=(
 	["libklvanc"]="https://github.com/stoth68000/libklvanc.git"
     ["brotli"]="https://github.com/google/brotli.git"
 	["openapv"]="https://github.com/AcademySoftwareFoundation/openapv.git"
+	["AMF"]="https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git"
 	["FFmpeg"]="https://github.com/FFmpeg/FFmpeg.git"
 )
 
@@ -151,6 +152,7 @@ declare -A OTHER_GIT_REPOS=(
     ["budfread"]="https://code.videolan.org/videolan/libudfread.git"
     ["bluray"]="https://code.videolan.org/videolan/libbluray.git"
     ["svtav1"]="https://gitlab.com/AOMediaCodec/SVT-AV1.git"
+	["nv-codec-headers"]="https://code.ffmpeg.org/FFmpeg/nv-codec-headers.git"
 )
 
 # Extra files
