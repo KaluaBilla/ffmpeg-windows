@@ -441,6 +441,8 @@ build_aribb24() {
 build_xvidcore() {
 	echo "[+] Building xvidcore for $ARCH..."
 	cd "$BUILD_DIR/xvidcore/build/generic" || exit 1
+
+	sed -i 's/-mno-cygwin/-fPIC/g' configure
 	
 	(make distclean && make clean) || true
 	
