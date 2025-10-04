@@ -610,6 +610,8 @@ patch_ffmpeg
 
 find "$PREFIX" -iname "*.pc" -exec sed -i 's/\s*-ldl\b\s*/ /g' {} +
 find "$PREFIX" -iname "*.dll*" -delete
+configure_amf
+configure_nv_headers
 build_ffmpeg
 
 echo "Build completed successfully"
