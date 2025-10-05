@@ -205,6 +205,7 @@ build_ffmpeg() {
 		#--enable-libklvanc
 		--enable-liboapv 
 		--enable-mediafoundation
+		--enable-amf
 		"${FLAGS[@]}"
 		"${ASM_FLAG[@]}"
 	)
