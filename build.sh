@@ -145,12 +145,10 @@ PERF_FLAGS="-funroll-loops -fomit-frame-pointer"
 
 OTHER_FLAGS="-fvisibility=default -fPIC"
 
-export CFLAGS="-I${PREFIX1}/include -I${PREFIX2}/include $SIZE_CFLAGS $PERF_FLAGS $OTHER_FLAGS -D_FORTIFY_SOURCE=0 -DNDEBUG"
-export CXXFLAGS="$SIZE_CXXFLAGS $PERF_FLAGS $OTHER_FLAGS -DNDEBUG -D_FORTIFY_SOURCE=0"
+export CFLAGS="-I${PREFIX1}/include -I${PREFIX2}/include $SIZE_CFLAGS $PERF_FLAGS $OTHER_FLAGS -D_FORTIFY_SOURCE=0 -DNDEBUG -pthread"
+export CXXFLAGS="$SIZE_CXXFLAGS $PERF_FLAGS $OTHER_FLAGS -DNDEBUG -D_FORTIFY_SOURCE=0 -pthread"
 export CPPFLAGS="-I${PREFIX1}/include -I${PREFIX2}/include -DNDEBUG -fPIC -D_FORTIFY_SOURCE=0"
-export LDFLAGS="-static-libstdc++ -static-libgcc -static -L${PREFIX1}/lib -L${PREFIX1}/lib64 -L${PREFIX2}/lib -L${PREFIX2}/lib64 $SIZE_LDFLAGS -fPIC"
-
-
+export LDFLAGS="-static-libstdc++ -static-libgcc -static -L${PREFIX1}/lib -L${PREFIX1}/lib64 -L${PREFIX2}/lib -L${PREFIX2}/lib64 $SIZE_LDFLAGS -fPIC -pthread"
 
 
 COMMON_AUTOTOOLS_FLAGS=(
