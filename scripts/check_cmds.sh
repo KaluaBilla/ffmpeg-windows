@@ -79,9 +79,10 @@ cmake() {
             echo "Error: cmake not found on system."
             exit 1
         fi
-        ver=$(command cmake --version | awk '/version/ {print $3; exit}')
+        # Use the actual binary path, not the function
+        ver=$("$sys_cmake" --version | awk '/version/ {print $3; exit}')
         
-        # If ver < 4.0.0, use system cmake otherwise build 3.31.9
+        # If ver < 4.0.0, use system cmake; otherwise build 3.31.9
         if [[ $(printf '%s\n' "$ver" "4.0.0" | sort -V | head -n1) == "4.0.0" ]]; then
             # ver >= 4.0.0, so we need to build 3.31.9
             local src="$ROOT_DIR/cmake/src"
@@ -106,7 +107,7 @@ cmake() {
             fi
             __CMAKE_BIN="$inst/bin/cmake"
         else
-            # ver < 4.0.0 use system cmake
+            # ver < 4.0.0, use system cmake
             __CMAKE_BIN="$sys_cmake"
         fi
     fi
