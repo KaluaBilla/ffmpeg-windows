@@ -565,7 +565,7 @@ build_aom
 build_svtav1
 build_uavs3d
 build_xvidcore
-# build_kvazaar # (ffmpeg requires some dll import type shit)
+build_kvazaar
 build_vvenc
 build_xeve
 build_xevd
@@ -583,7 +583,7 @@ build_soxr
 build_fftw
 build_rubberband
 build_zvbi
-build_openmpt
+#build_openmpt
 build_libzmq
 build_libplacebo
 build_librist
