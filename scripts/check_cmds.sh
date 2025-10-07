@@ -75,24 +75,19 @@ cmake() {
     if [[ -z "$__CMAKE_BIN" ]]; then
         local sys_cmake ver
         sys_cmake=$(command -v cmake 2>/dev/null)
-
         if [[ -z "$sys_cmake" ]]; then
             echo "Error: cmake not found on system."
             exit 1
         fi
-
-        # FIX: Use 'command' to call the real cmake binary, not this function
         ver=$(command cmake --version | awk '/version/ {print $3; exit}')
-
-        # Check if system cmake version is < 4.0.0
-        if [[ $(printf '%s\n' "$ver" "4.0.0" | sort -V | head -n1) == "$ver" ]]; then
-            __CMAKE_BIN="$sys_cmake"
-        else
+        
+        # If ver < 4.0.0, use system cmake otherwise build 3.31.9
+        if [[ $(printf '%s\n' "$ver" "4.0.0" | sort -V | head -n1) == "4.0.0" ]]; then
+            # ver >= 4.0.0, so we need to build 3.31.9
             local src="$ROOT_DIR/cmake/src"
             local build="$ROOT_DIR/cmake/build"
             local inst="$ROOT_DIR/cmake/install"
             mkdir -p "$src" "$build" "$inst"
-
             if [[ ! -x "$inst/bin/cmake" ]]; then
                 echo "Detected CMake $ver >= 4.0.0, building 3.31.9..."
                 (
@@ -103,18 +98,18 @@ cmake() {
                         tar -xf cmake-3.31.9.tar.gz -C "$src" --strip-components=1
                     fi
                     cd "$build" || exit 1
-                    # Use 'command' here too to avoid recursion
                     "$src/bootstrap" --prefix="$inst" \
                         CC="$HOST_CC" CXX="$HOST_CXX"
                     command make -j"$(nproc)"
                     command make install
                 ) || { echo "CMake 3.31.9 build failed."; exit 1; }
             fi
-
             __CMAKE_BIN="$inst/bin/cmake"
+        else
+            # ver < 4.0.0 use system cmake
+            __CMAKE_BIN="$sys_cmake"
         fi
     fi
-
     "$__CMAKE_BIN" "$@"
 }
 
