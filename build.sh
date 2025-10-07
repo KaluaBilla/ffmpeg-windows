@@ -548,7 +548,7 @@ export LDFLAGS=$SAVED_LDFLAGS
 export CPPFLAGS=$SAVED_CPPFLAGS
 build_libcodec2
 build_libbs2b
-#build_libgme #(didnt build)
+build_libgme
 build_flite
 # build_libmodplug #(dint build)
 build_liblc3
