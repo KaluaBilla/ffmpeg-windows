@@ -41,6 +41,7 @@ EXTRA_LIBS=(
   -lssl
   -lcrypt32
   -lfftw3
+  -lmodplug
   
   # Windows system libraries (CRITICAL - these were missing)
   -luserenv      # For GetUserProfileDirectoryW
