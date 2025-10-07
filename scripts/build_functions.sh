@@ -463,7 +463,7 @@ build_xvidcore() {
 		AR="$AR_ABS" \
 		RANLIB="$RANLIB_ABS" \
 		STRIP="$STRIP_ABS" \
-		CFLAGS="$CFLAGS" \
+		CFLAGS="$CFLAGS -std=gnu99" \
 		--disable-assembly \
 		LDFLAGS="$LDFLAGS"
 	
