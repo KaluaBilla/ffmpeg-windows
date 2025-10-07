@@ -80,8 +80,11 @@ cmake() {
             echo "Error: cmake not found on system."
             exit 1
         fi
+
+        # FIX: Use 'command' to call the real cmake binary, not this function
         ver=$(command cmake --version | awk '/version/ {print $3; exit}')
 
+        # Check if system cmake version is < 4.0.0
         if [[ $(printf '%s\n' "$ver" "4.0.0" | sort -V | head -n1) == "$ver" ]]; then
             __CMAKE_BIN="$sys_cmake"
         else
@@ -100,6 +103,7 @@ cmake() {
                         tar -xf cmake-3.31.9.tar.gz -C "$src" --strip-components=1
                     fi
                     cd "$build" || exit 1
+                    # Use 'command' here too to avoid recursion
                     "$src/bootstrap" --prefix="$inst" \
                         CC="$HOST_CC" CXX="$HOST_CXX"
                     command make -j"$(nproc)"
