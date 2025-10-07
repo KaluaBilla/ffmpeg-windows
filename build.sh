@@ -599,7 +599,7 @@ build_lensfun
 build_libssh
 build_libqrencode
 build_quirc
-#build_chromaprint #(same something dll)
+build_chromaprint
 # build_lcevcdec # (nahi compile ho raha)
 build_openapv
 
