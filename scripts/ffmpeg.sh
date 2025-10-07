@@ -131,7 +131,7 @@ build_ffmpeg() {
 		--arch="$ARCH"
 		--target-os=mingw32
 		--pkg-config-flags=--static
-		--extra-cflags="${CFLAGS} -I${PREFIX2}/include/cairo -DXEVE_STATIC -DXEVD_STATIC -DXVIDCORE_STATIC -DCAIRO_STATIC -DLIBTWOLAME_STATIC -DLIBSSH_STATIC -DZMQ_STATIC -DCAIRO_WIN32_STATIC_BUILD"
+		--extra-cflags="${CFLAGS} -I${PREFIX1}/include/ -I${PREFIX2}/include/ -I${PREFIX1}/include/cairo -I${PREFIX2}/include/cairo -DOPENMPT_STATIC -DXEVE_STATIC -DXEVD_STATIC -DXVIDCORE_STATIC -DCAIRO_STATIC -DLIBTWOLAME_STATIC -DLIBSSH_STATIC -DZMQ_STATIC -DCAIRO_WIN32_STATIC_BUILD"
 		--extra-ldflags="${LDFLAGS} -static -static-libstdc++ -static-libgcc"
 		--extra-libs="${EXTRA_LIBS[*]} -liphlpapi -lole32 -lshell32 -luuid -lm -lpthread -lws2_32 -luser32 -lkernel32 -lcomdlg32 -lole32 -loleaut32 -luuid -lwinspool"
 		--extra-version=$EXTRA_VERSION
@@ -168,7 +168,7 @@ build_ffmpeg() {
 		--enable-libilbc
 		--enable-libcodec2
 		--enable-libmysofa
-		#--enable-libopenmpt
+		--enable-libopenmpt
 		--enable-libfreetype
 		--enable-libfontconfig
 		--enable-libfribidi
@@ -191,7 +191,7 @@ build_ffmpeg() {
 		--enable-libuavs3d
 		--enable-librtmp
 		#--enable-libgme
-		--enable-libjxl
+		#--enable-libjxl
 		--enable-libqrencode
 		--enable-libquirc
         #--enable-chromaprint
@@ -210,7 +210,7 @@ build_ffmpeg() {
 		"${ASM_FLAG[@]}"
 	)
 
-	[ "$ARCH" != "x86" ] && CONFIGURE_FLAGS+=(--enable-libzvbi)
+	#[ "$ARCH" != "x86" ] && CONFIGURE_FLAGS+=(--enable-libzvbi)
 
 
 test=(--enable-cross-compile
