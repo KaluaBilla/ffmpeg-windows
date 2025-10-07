@@ -550,7 +550,7 @@ build_libcodec2
 build_libbs2b
 build_libgme
 build_flite
-# build_libmodplug #(dint build)
+build_libmodplug
 build_liblc3
 
 ### Video codecs
