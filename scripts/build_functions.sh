@@ -983,9 +983,9 @@ build_cairo() {
         -Dxcb=disabled \
         -Dxlib=disabled \
         -Dxlib-xcb=disabled \
+        -Dlzo=disabled \
         -Dzlib=enabled \
         -Dtests=disabled \
-        -Dlzo=enabled \
         -Dgtk2-utils=disabled \
         -Dglib=enabled \
         -Dspectre=disabled \
@@ -1188,8 +1188,12 @@ build_glib() {
         -Dlibmount=disabled \
         -Dselinux=disabled \
         -Dman-pages=disabled \
+        -Dsysprof=disabled \
+        -Dlibelf=disabled \
+        -Dbsymbolic_functions=false \
         -Dc_link_args="$LDFLAGS -liconv"
 }
+
 
 
 build_fribidi() {
