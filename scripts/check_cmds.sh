@@ -69,6 +69,7 @@ detect_host_cxx
 
 export HOST_CC HOST_CXX
 
+: <<'IDK'
 __CMAKE_BIN=""
 
 cmake() {
@@ -113,6 +114,6 @@ cmake() {
     fi
     "$__CMAKE_BIN" "$@"
 }
-
+IDK
 check cmake
-cmake --version
+
