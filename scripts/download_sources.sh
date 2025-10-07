@@ -118,6 +118,7 @@ declare -A GITHUB_REPOS=(
     ["brotli"]="https://github.com/google/brotli.git"
 	["openapv"]="https://github.com/AcademySoftwareFoundation/openapv.git"
 	["AMF"]="https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git"
+	["libgsm"]="https://github.com/rhythmcache/libgsm.git"
 	["FFmpeg"]="https://github.com/FFmpeg/FFmpeg.git"
 )
 
@@ -259,7 +260,7 @@ download_sources() {
 		download_file "$ZLIB_URL" "zlib.tar.gz" &
 		download_file "$XZ_URL" "xz.tar.gz" &
 		download_file "$OPENSSL_URL" "openssl.tar.gz" &
-		download_file "$LIBGSM_URL" "libgsm.tar.gz" &
+		#download_file "$LIBGSM_URL" "libgsm.tar.gz" &
 		download_file "$LAME_URL" "lame.tar.gz" &
 		download_file "$OPUS_URL" "opus.tar.gz" &
 		download_file "$VORBIS_URL" "vorbis.tar.xz" &
@@ -345,7 +346,7 @@ prepare_sources() {
 	[ ! -d speex ] && tar -xf "${DOWNLOAD_DIR}/speex.tar.gz" && mv "$SPEEX_VERSION" speex
 	[ ! -d libexpat ] && tar -xf "${DOWNLOAD_DIR}/libexpat.tar.gz" && mv "$LIBEXPAT_VERSION" libexpat
 	[ ! -d openmpt ] && tar -xf "${DOWNLOAD_DIR}/openmpt.tar.gz" && mv "$OPENMPT_VERSION"* openmpt
-	[ ! -d libgsm ] && tar -xf "${DOWNLOAD_DIR}/libgsm.tar.gz" && mv gsm* libgsm
+	#[ ! -d libgsm ] && tar -xf "${DOWNLOAD_DIR}/libgsm.tar.gz" && mv gsm* libgsm
 	[ ! -d libssh ] && tar -xf "${DOWNLOAD_DIR}/libssh.tar.xz" && mv "$LIBSSH_VERSION" libssh
 	[ ! -d xvidcore ] && tar -xf "${DOWNLOAD_DIR}/xvid.tar.gz"
 	[ ! -d libbs2b ] && tar -xf "${DOWNLOAD_DIR}/libbs2b.tar.gz" && mv "$LIBBS2B_VERSION" libbs2b
