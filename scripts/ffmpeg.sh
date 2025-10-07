@@ -153,7 +153,7 @@ build_ffmpeg() {
 		--enable-libopenjpeg
 		--enable-libwebp
 		--enable-libxvid
-		#--enable-libkvazaar
+		--enable-libkvazaar
 		--enable-libxavs
 		--enable-libdavs2
 		--enable-libmp3lame
