@@ -536,7 +536,16 @@ build_speex
 build_libvo_amrwbenc
 build_opencore_amr
 build_libilbc
+export SAVED_CFLAGS=$CFLAGS
+export SAVED_CXXFLAGS=$CXXFLAGS
+export SAVED_LDFLAGS=$LDFLAGS
+export SAVED_CPPFLAGS=$CPPFLAGS
+unset CFLAGS CXXFLAGS LDFLAGS CPPFLAGS
 build_libcodec2_native
+export CFLAGS=$SAVED_CFLAGS
+export CXXFLAGS=$SAVED_CXXFLAGS
+export LDFLAGS=$SAVED_LDFLAGS
+export CPPFLAGS=$SAVED_CPPFLAGS
 build_libcodec2
 build_libbs2b
 #build_libgme #(didnt build)
