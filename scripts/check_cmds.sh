@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Ensure temp directory exists
 mkdir -p "$ROOT_DIR/temp"
 
 check() {
@@ -17,7 +16,6 @@ check() {
 	done
 }
 
-# Detect a working C compiler
 detect_host_cc() {
 	for cc in gcc clang cc; do
 		cc_path=$(command -v "$cc" 2>/dev/null)
@@ -40,7 +38,6 @@ detect_host_cc() {
 	exit 1
 }
 
-# Detect a working C++ compiler
 detect_host_cxx() {
 	for cxx in g++ clang++ c++; do
 		cxx_path=$(command -v "$cxx" 2>/dev/null)
@@ -64,13 +61,58 @@ detect_host_cxx() {
 }
 
 check which curl wget tar zip sed meson \
-	make autopoint cmake ninja autoconf automake libtool pkg-config makeinfo \
+	make autopoint ninja autoconf automake libtool pkg-config makeinfo \
 	gettext gperf bison flex git xz unzip file find cp mv rm ln svn nasm yasm
-
-#[ -z "$FFMPEG_STATIC" ] && check ruby
-#[ "$ARCH" != "riscv64" ] && check rustc cargo
 
 detect_host_cc
 detect_host_cxx
 
 export HOST_CC HOST_CXX
+
+__CMAKE_BIN=""
+
+cmake() {
+    if [[ -z "$__CMAKE_BIN" ]]; then
+        local sys_cmake ver
+        sys_cmake=$(command -v cmake 2>/dev/null)
+
+        if [[ -z "$sys_cmake" ]]; then
+            echo "Error: cmake not found on system."
+            exit 1
+        fi
+        ver=$(command cmake --version | awk '/version/ {print $3; exit}')
+
+        if [[ $(printf '%s\n' "$ver" "4.0.0" | sort -V | head -n1) == "$ver" ]]; then
+            __CMAKE_BIN="$sys_cmake"
+        else
+            local src="$ROOT_DIR/cmake/src"
+            local build="$ROOT_DIR/cmake/build"
+            local inst="$ROOT_DIR/cmake/install"
+            mkdir -p "$src" "$build" "$inst"
+
+            if [[ ! -x "$inst/bin/cmake" ]]; then
+                echo "Detected CMake $ver >= 4.0.0, building 3.31.9..."
+                (
+                    cd "$ROOT_DIR/cmake" || exit 1
+                    if [[ ! -f "$src/CMakeLists.txt" ]]; then
+                        [[ -f cmake-3.31.9.tar.gz ]] || \
+                            curl -LO https://github.com/Kitware/CMake/releases/download/v3.31.9/cmake-3.31.9.tar.gz
+                        tar -xf cmake-3.31.9.tar.gz -C "$src" --strip-components=1
+                    fi
+                    cd "$build" || exit 1
+                    "$src/bootstrap" --prefix="$inst" \
+                        CC="$HOST_CC" CXX="$HOST_CXX"
+                    command make -j"$(nproc)"
+                    command make install
+                ) || { echo "CMake 3.31.9 build failed."; exit 1; }
+            fi
+
+            __CMAKE_BIN="$inst/bin/cmake"
+        fi
+    fi
+
+    "$__CMAKE_BIN" "$@"
+}
+
+check cmake
+cmake --version
