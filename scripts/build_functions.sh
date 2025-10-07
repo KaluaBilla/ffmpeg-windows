@@ -173,7 +173,7 @@ build_twolame() {
 	echo "✔ twolame built successfully"
 }
 
-build_libgsm() {
+build_libgsm_old() {
 	echo "[+] Building libgsm for $ARCH..."
 	cd "$BUILD_DIR/libgsm" || exit 1
 	
@@ -192,6 +192,12 @@ build_libgsm() {
 	generate_pkgconfig "gsm" "GSM 06.10 lossy speech compression" "1.0.22" "-lgsm" "-I\${includedir}"
 	
 	echo "✔ libgsm built successfully"
+}
+
+build_libgsm() {
+	meson_build "libgsm" "$BUILD_DIR/libgsm" "$CROSS_FILE_TEMPLATE" \
+	-Dsasr=true \
+	-Dltp_cut=true
 }
 
 build_libvpx() {
