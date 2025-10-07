@@ -190,7 +190,7 @@ build_ffmpeg() {
 		--enable-libsvtav1
 		--enable-libuavs3d
 		--enable-librtmp
-		#--enable-libgme
+		--enable-libgme
 		#--enable-libjxl
 		--enable-libqrencode
 		--enable-libquirc
