@@ -40,6 +40,7 @@ EXTRA_LIBS=(
   -lcrypto
   -lssl
   -lcrypt32
+  -lfftw3
   
   # Windows system libraries (CRITICAL - these were missing)
   -luserenv      # For GetUserProfileDirectoryW
@@ -111,11 +112,11 @@ build_ffmpeg() {
 	[ "$ARCH" = "x86" ] && [ -z "$FFMPEG_STATIC" ] && ASM_FLAG=(--disable-asm)
 
 	
-		type=${ARCH}-dynamic
+		type=${ARCH}
 
 	(make clean && make distclean) || true
 
-	EXTRA_VERSION="mingw-$type-[gh/tg]/KaluaBilla"
+	EXTRA_VERSION="windows-[gh/tg]/KaluaBilla"
 	CONFIGURE_FLAGS=(
 		--enable-cross-compile
 		--disable-shared
