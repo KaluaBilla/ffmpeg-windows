@@ -98,25 +98,10 @@ patch_ffmpeg() {
 build_ffmpeg() {
 	echo "Building FFmpeg for $ARCH..."
 	cd "$BUILD_DIR/FFmpeg" || exit 1
-
-	FLAGS=()
-	[ "$ARCH" != "riscv64" ] && FLAGS=(
-                     # --enable-librav1e
-                      --enable-librsvg
-                      --enable-libxavs2)
-	[ "$ARCH" != "armv7" ] && [ "$ARCH" != "riscv64" ] && FLAGS+=(--enable-libxeve --enable-libxevd)
-
-	NEON=()
-	[[ "$ARCH" == "aarch64" || "$ARCH" == "armv7" ]] && NEON=(--enable-neon)
-
 	ASM_FLAG=()
 	[ "$ARCH" = "x86" ] && [ -z "$FFMPEG_STATIC" ] && ASM_FLAG=(--disable-asm)
-
-	
-		type=${ARCH}
-
+    type=${ARCH}
 	(make clean && make distclean) || true
-
 	EXTRA_VERSION="windows-[gh/tg]/KaluaBilla"
 	CONFIGURE_FLAGS=(
 		--enable-cross-compile
@@ -207,6 +192,10 @@ build_ffmpeg() {
 		--enable-vapoursynth
 		--enable-avisynth
 		--enable-liboapv 
+		--enable-libxeve 
+		--enable-libxevd
+		--enable-librsvg
+        --enable-libxavs2
 		--enable-mediafoundation
 		--enable-amf
 		--enable-sdl2
