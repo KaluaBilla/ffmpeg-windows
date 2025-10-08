@@ -630,8 +630,8 @@ build_libwebp
 
 ### Utilities & extras
 build_lensfun
-#build_highway
-#build_libjxl
+build_highway
+build_libjxl
 build_libssh
 build_libqrencode
 build_quirc
