@@ -600,6 +600,7 @@ build_libssh
 build_libqrencode
 build_quirc
 build_chromaprint
+build_vapoursynth
 # build_lcevcdec # (nahi compile ho raha)
 build_openapv
 
