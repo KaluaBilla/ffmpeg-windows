@@ -44,7 +44,7 @@ jobs:
           tar -xf /tmp/llvm-mingw.tar.xz -C "$LLVM_MINGW_DIR" --strip-components=1
           echo "$LLVM_MINGW_DIR/bin" >> $GITHUB_PATH
           export PATH="$LLVM_MINGW_DIR/bin:$PATH"
-          clang --version   
+          llvm-dlltool --version   
 
       - name: Install cargo-c
         run: |
