@@ -178,7 +178,7 @@ build_ffmpeg() {
 		--enable-libuavs3d
 		--enable-librtmp
 		--enable-libgme
-		#--enable-libjxl
+		--enable-libjxl
 		--enable-libqrencode
 		--enable-libquirc
         --enable-chromaprint
