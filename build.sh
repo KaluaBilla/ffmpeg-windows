@@ -15,7 +15,7 @@ if [[ -z "$ARCH" || ! " $VALID_ARCHES " =~ $ARCH ]]; then
 	echo "Default API_LEVEL: 29"
 	exit 1
 fi
-
+mkdir -p "${ROOT_DIR}/out"
 source "${ROOT_DIR}/scripts/check_cmds.sh"
 
 case "$(uname -s)" in
@@ -622,11 +622,10 @@ find "$PREFIX" -iname "*.dll*" -delete
 configure_amf
 configure_nv_headers
 build_sdl
-build_ffmpeg
+build_ffmpeg || cp "$BUILD_DIR/FFmpeg/ffbuild/config.log" "${ROOT_DIR}/out"
 
 echo "Build completed successfully"
 
-mkdir -p "${ROOT_DIR}/out"
 cp "${PREFIX}/bin/ffmpeg.exe" "${ROOT_DIR}/out" || true
 cp "${PREFIX}/bin/ffprobe.exe" "${ROOT_DIR}/out" || true
 cp "${PREFIX}/bin/ffplay.exe" "${ROOT_DIR}/out" || true
