@@ -42,9 +42,11 @@ jobs:
           mkdir -p "$LLVM_MINGW_DIR"
           curl -L $LLVM_MINGW_URL -o /tmp/llvm-mingw.tar.xz
           tar -xf /tmp/llvm-mingw.tar.xz -C "$LLVM_MINGW_DIR" --strip-components=1
+
+          find "$LLVM_MINGW_DIR/bin" -type f ! -name 'llvm-dlltool' -delete
+
           echo "$LLVM_MINGW_DIR/bin" >> $GITHUB_PATH
           export PATH="$LLVM_MINGW_DIR/bin:$PATH"
-           
 
       - name: Install cargo-c
         run: |
