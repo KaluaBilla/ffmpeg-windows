@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 ARCH="${1:-$ARCH}"
 API_LEVEL="${2:-$API_LEVEL}"
@@ -285,38 +285,75 @@ get_host_override() {
 	esac
 }
 
+create_cmake_toolchain() {
+    local output_file="$1"
+    local system="${2:-Windows}"  # default to Windows
+    
+    cat >"$output_file" <<EOF
+# Auto-generated CMake toolchain file
+set(CMAKE_SYSTEM_NAME ${system})
+set(CMAKE_SYSTEM_PROCESSOR ${ARCH})
+set(CMAKE_CROSSCOMPILING ON)
 
-MINIMAL_CMAKE_FLAGS=(
-	"-DCMAKE_SYSTEM_NAME=Windows"
-	"-DCMAKE_BUILD_TYPE=Release"
-	"-DCMAKE_INSTALL_PREFIX=$PREFIX"
-	"-DCMAKE_C_COMPILER=$CC_ABS"
-	"-DCMAKE_CXX_COMPILER=$CXX_ABS"
-	"-DCMAKE_AR=$AR_ABS"
-	"-DCMAKE_RANLIB=$RANLIB_ABS"
-	"-DCMAKE_STRIP=$STRIP_ABS"
-	"-DCMAKE_C_FLAGS=$CFLAGS"
-	"-DCMAKE_CXX_FLAGS=$CXXFLAGS"
-	"-DCMAKE_EXE_LINKER_FLAGS=$LDFLAGS"
-)
+# Compilers
+set(CMAKE_C_COMPILER ${CC_ABS})
+set(CMAKE_CXX_COMPILER ${CXX_ABS})
+set(CMAKE_AR ${AR_ABS})
+set(CMAKE_RANLIB ${RANLIB_ABS})
+set(CMAKE_STRIP ${STRIP_ABS})
 
+# Compiler and linker flags
+set(CMAKE_C_FLAGS_INIT "${CFLAGS}")
+set(CMAKE_CXX_FLAGS_INIT "${CXXFLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "${LDFLAGS}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "${LDFLAGS}")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "${LDFLAGS}")
+
+# Installation prefix
+set(CMAKE_INSTALL_PREFIX ${PREFIX} CACHE PATH "Install prefix" FORCE)
+
+# Search paths
+set(CMAKE_FIND_ROOT_PATH ${PREFIX})
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+# Disable system searches
+set(CMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY OFF)
+set(CMAKE_FIND_USE_PACKAGE_REGISTRY OFF)
+set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH OFF)
+
+# Build type
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+EOF
+}
 
 cmake_build() {
-	local project_name="$1"
-	local build_dir="$2"
-	local use_common_flags="${3:-true}"
-	shift 3
-	
-	echo "[+] Building $project_name for $ARCH..."
-	cd "$build_dir" || exit 1
-	
-	rm -rf build && mkdir build && cd build
-
-	cmake .. -G Ninja "${MINIMAL_CMAKE_FLAGS[@]}" "$@"
-	ninja -j"$(nproc)"
-	ninja install
-	
-	echo "✓ $project_name built successfully"
+    local project_name="$1"
+    local build_dir="$2"
+    local use_toolchain="${3:-true}"  # default to true
+    shift 3  # remove first 3 args, rest are cmake options
+    
+    echo "[+] Building $project_name for $ARCH..."
+    cd "$build_dir" || exit 1
+    
+    rm -rf build && mkdir build && cd build
+    
+    # Auto-generate toolchain if requested
+    local toolchain_args=""
+    if [[ "$use_toolchain" == "true" ]]; then
+        local toolchain_file="$BUILD_DIR/cmake-toolchain-${project_name}.txt"
+        create_cmake_toolchain "$toolchain_file" "Windows"
+        toolchain_args=(-DCMAKE_TOOLCHAIN_FILE=$toolchain_file -DCMAKE_MAKE_PROGRAM=$(which ninja))
+    fi
+    
+    cmake .. -G Ninja "${toolchain_args[@]}" "$@"
+        
+    ninja -j"$(nproc)"
+    ninja install
+    
+    echo "✓ $project_name built successfully"
 }
 
 cmake_ninja_build() {
@@ -423,8 +460,6 @@ nuke_pkgconfig_libs() {
 }
 
 
-#!/bin/bash
-
 # Function 1: Nuke all linking flags from .pc files
 nuke_pkgconfig_libs() {
 	echo "[*] Nuking all -l flags from .pc files in $PREFIX..."
@@ -508,6 +543,7 @@ build_fribidi
 ### Graphics stack
 build_libffi
 build_libpng
+
 export PREFIX="$PREFIX2"
 build_freetype
 build_harfbuzz
@@ -556,7 +592,7 @@ build_liblc3
 ### Video codecs
 build_x264
 build_libvpx
-build_xavs #(isme kuchh edit karna pada thha common.c mein)
+build_xavs
 build_davs2
 build_libsrt
 build_openjpeg
@@ -622,7 +658,7 @@ find "$PREFIX" -iname "*.dll*" -delete
 configure_amf
 configure_nv_headers
 build_sdl
-build_ffmpeg || cp "$BUILD_DIR/FFmpeg/ffbuild/config.log" "${ROOT_DIR}/out"
+build_ffmpeg
 
 echo "Build completed successfully"
 
