@@ -62,7 +62,7 @@ detect_host_cxx() {
 
 check which curl wget tar zip sed meson \
 	make autopoint ninja autoconf automake libtool pkg-config makeinfo \
-	gettext gperf bison flex git xz unzip file find cp mv rm ln svn nasm yasm
+	gettext gperf bison flex git xz unzip file find cp mv rm ln svn nasm yasm llvm-dlltool
 
 detect_host_cc
 detect_host_cxx
