@@ -1250,8 +1250,7 @@ build_x265() {
 	local CMAKE_ARGS=()
 	if [ "$ARCH" = "armv7" ]; then
 		PROCESSOR=armv7l
-		CMAKE_ARGS=("${MINIMAL_CMAKE_FLAGS[@]}")
-		CMAKE_ARGS+=(-DCROSS_COMPILE_ARM=1)
+		CMAKE_ARGS=(-DCROSS_COMPILE_ARM=1)
 	elif [ "$ARCH" = "aarch64" ]; then
 		PROCESSOR=aarch64
 		CMAKE_ARGS+=(-DCROSS_COMPILE_ARM64=1)
@@ -1328,29 +1327,20 @@ build_openjpeg() {
 }
 
 build_libmysofa() {
-	cmake_ninja_build "libmysofa" "$BUILD_DIR/libmysofa" false \
-		-DCMAKE_PREFIX_PATH="$PREFIX" \
+	cmake_build "libmysofa" "$BUILD_DIR/libmysofa" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DBUILD_TESTS=OFF \
 		-DMATH='-lm'
 }
 
-build_soxr() {
-	echo "[+] Building soxr for $ARCH..."
-	cd "$BUILD_DIR/soxr" || exit 1
-	
-	cmake -B build -G Ninja . \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+build_soxr() {	
+	cmake_build "soxr" "$BUILD_DIR/soxr" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DWITH_OPENMP=OFF \
 		-DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		-Wno-dev
 
-	ninja -C build -j"$(nproc)"
-	ninja -C build install
-	
 	generate_pkgconfig "soxr" "High quality, one-dimensional sample-rate conversion library" "0.1.3" "-lsoxr"
-	echo "✓ soxr built successfully"
 }
 
 build_svtav1() {
@@ -1369,7 +1359,7 @@ build_libsrt() {
 }
 
 build_libzmq() {
-	cmake_build "libzmq (ZeroMQ)" "$BUILD_DIR/libzmq" true \
+	cmake_build "libzmq" "$BUILD_DIR/libzmq" true \
 		-DENABLE_CURVE=OFF \
 		-DENABLE_DRAFTS=OFF \
 		-DBUILD_SHARED=OFF \
@@ -1378,7 +1368,6 @@ build_libzmq() {
 		-DBUILD_TESTS=OFF \
 		-DZMQ_BUILD_TESTS=OFF \
 		-DZMQ_HAVE_IPC=OFF \
-		-DZMQ_IOTHREAD_POLLER=epoll \
 		-DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0A00 -DNTDDI_VERSION=0x0A000000" \
 		-DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0A00 -DNTDDI_VERSION=0x0A000000 -Wno-unused-command-line-argument"
 }
@@ -1404,46 +1393,19 @@ build_libcodec2_native() {
 }
 
 build_libcodec2() {
-	echo "[+] Building libcodec2 for $ARCH..."
-	cd "$BUILD_DIR/libcodec2" || exit 1
-	rm -rf build && mkdir build && cd build
-
-	cmake -G Ninja .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+	cmake_build "codec2" "$BUILD_DIR/libcodec2" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DUNITTEST=FALSE \
-		-DGENERATE_CODEBOOK="$BUILD_DIR/libcodec2-native/build/src/generate_codebook"
+		-DGENERATE_CODEBOOK="$BUILD_DIR/libcodec2-native/build/src/generate_codebook"	
 
-	ninja
-	ninja install
-	
 	generate_pkgconfig "libcodec2" "Low bit rate speech codec" "1.0" "-lcodec2"
-	echo "✔ libcodec2 built successfully"
 }
 
 build_uavs3d() {
-	echo "[+] Building uavs3d for $ARCH..."
-	cd "$BUILD_DIR/uavs3d" || exit 1
-	rm -rf build && mkdir build && cd build
-
-	if [[ "$ARCH" == "x86" ]]; then
-		cmake .. \
-			-DCMAKE_BUILD_TYPE=Release \
-			-DCMAKE_INSTALL_PREFIX="$PREFIX" \
-			-DCMAKE_SYSTEM_PROCESSOR=x86 \
-			-DBUILD_SHARED_LIBS=OFF \
-			-DCOMPILE_10BIT=OFF
-	else
-		cmake .. \
-			"${MINIMAL_CMAKE_FLAGS[@]}" \
+		cmake_build "uavs3d" "$BUILD_DIR/uavs3d" true \
 			-DCMAKE_SYSTEM_PROCESSOR="$ARCH" \
 			-DBUILD_SHARED_LIBS=OFF \
 			-DCOMPILE_10BIT=OFF
-	fi
-
-	cmake --build . --target uavs3d -j"$(nproc)"
-	cmake --install .
-	echo "✔ uavs3d built successfully"
 }
 
 build_libssh() {
@@ -1471,10 +1433,6 @@ build_libssh() {
 }
 
 build_vvenc() {
-	echo "[+] Building vvenc for $ARCH..."
-	cd "$BUILD_DIR/vvenc" || exit 1
-	rm -rf build && mkdir build && cd build
-
 	local simd_flags=()
 	if [[ "$ARCH" =~ ^(armv7|riscv64|x86)$ ]]; then
 		simd_flags+=(
@@ -1484,30 +1442,25 @@ build_vvenc() {
 			-DVVENC_ENABLE_ARM_SIMD_SVE2=OFF
 		)
 	fi
-
-	cmake .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+	cmake_build "vvenc" "$BUILD_DIR/vvenc" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DVVENC_LIBRARY_ONLY=ON \
 		-DVVENC_ENABLE_LINK_TIME_OPT=OFF \
 		-DCMAKE_SYSTEM_PROCESSOR="${ARCH}" \
 		"${simd_flags[@]}"
-
-	cmake --build . --target install -- -j"$(nproc)"
-	echo "✔ vvenc built successfully"
 }
 
 build_pcre2() {
-	cmake_build "pcre2" "$BUILD_DIR/pcre2" true \
-		-DBUILD_SHARED_LIBS=OFF \
-		-DPCRE2_BUILD_PCRE2_16=OFF \
-		-DPCRE2_BUILD_PCRE2_32=OFF \
-		-DPCRE2_BUILD_TESTS=OFF \
-		-DPCRE2_BUILD_PCRE2GREP=OFF \
-		-DPCRE2_BUILD_PCRE2TEST=OFF \
-		-DPCRE2_SUPPORT_JIT=OFF \
-		-DPCRE2_STATIC_RUNTIME=ON
+    local build_dir="$BUILD_DIR/pcre2"
+    autotools_build_autoreconf "pcre2" "$build_dir" \
+        --disable-pcre2-16 \
+        --disable-pcre2-32 \
+        --disable-jit \
+        --disable-pcre2grep \
+        --disable-tests \
+        --enable-utf
 }
+
 
 build_lensfun() {
 	cd "$BUILD_DIR/lensfun" || exit 1
@@ -1539,17 +1492,9 @@ build_libgme() {
 
 
 build_libjxl() {
-	echo "[+] Building libjxl for $ARCH..."
-	cd "$BUILD_DIR/libjxl" || exit 1
-	rm -rf build && mkdir build && cd build
-
-	cmake .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+	cmake_build "libjxl" "$BUILD_DIR/libjxl" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DCMAKE_FIND_LIBRARY_SUFFIXES=".a" \
-		-DCMAKE_C_FLAGS="$CFLAGS -I$PREFIX/include" \
-		-DCMAKE_CXX_FLAGS="$CXXFLAGS -I$PREFIX/include" \
-		-DCMAKE_EXE_LINKER_FLAGS="$LDFLAGS -L$PREFIX/lib" \
 		-DCMAKE_ASM_COMPILER="$AS" \
 		-DJPEGXL_ENABLE_TOOLS=OFF \
 		-DJPEGXL_ENABLE_DEVTOOLS=OFF \
@@ -1573,9 +1518,6 @@ build_libjxl() {
 		-DJPEGXL_FORCE_SYSTEM_GTEST=OFF \
 		-DZLIB_LIBRARY="$PREFIX/lib/libz.a" \
 		-DZLIB_INCLUDE_DIR="$PREFIX/include"
-
-	make -j"$(nproc)" && make install
-	echo "✔ libjxl built successfully"
 }
 
 build_libqrencode() {
@@ -1664,43 +1606,19 @@ cmake_build "lcevec" "$BUILD_DIR/LCEVCdec" true \
 }
 
 build_xeve() {
-	echo "[+] Building XEVE for $ARCH..."
-	echo "v0.5.1" > "$BUILD_DIR/xeve/version.txt"
-	cd "$BUILD_DIR/xeve" || exit 1
-	rm -rf out && mkdir out && cd out
-
-	local arm_flag=FALSE
-	[[ "$ARCH" == "aarch64" ]] && arm_flag=TRUE
-
-	cmake .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
-		-DSET_PROF=MAIN \
-		-DARM="$arm_flag"
-
-	make -j"$(nproc)" && make install
+     	echo "v0.5.1" > "$BUILD_DIR/xeve/version.txt"
+	cmake_build "xeve" "$BUILD_DIR/xeve" true \
+		-DSET_PROF=MAIN
 
 	[ ! -e "$PREFIX/lib/libxeve.a" ] && [ -f "$PREFIX/lib/xeve/libxeve.a" ] && \
 		ln -s "$PREFIX/lib/xeve/libxeve.a" "$PREFIX/lib/libxeve.a"
-	echo "✔ XEVE built successfully"
 }
 
 build_xevd() {
-	echo "[+] Building XEVD for $ARCH..."
-	cd "$BUILD_DIR/xevd" || exit 1
-	
-	[ ! -f "version.txt" ] && echo "v0.5.1" > version.txt
-	rm -rf out && mkdir out && cd out
-
-	local arm_flag=FALSE
-	[[ "$ARCH" =~ ^(armv7|aarch64)$ ]] && arm_flag=TRUE
-
-	cmake .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+		echo "v0.5.1" > "$BUILD_DIR/xevd/version.txt"
+		cmake_build "xevd" "$BUILD_DIR/xevd" true \
 		-DBUILD_SHARED_LIBS=OFF \
-		-DSET_PROF=MAIN \
-		-DARM="$arm_flag"
-
-	make -j"$(nproc)" && make install
+		-DSET_PROF=MAIN 
 
 	[ ! -e "$PREFIX/lib/libxevd.a" ] && [ -f "$PREFIX/lib/xevd/libxevd.a" ] && \
 		ln -s "$PREFIX/lib/xevd/libxevd.a" "$PREFIX/lib/libxevd.a"
@@ -1755,16 +1673,12 @@ build_vidstab() {
 	
 	rm -rf CMakeCache.txt CMakeFiles/ cmake_install.cmake build.ninja .ninja_deps .ninja_log
 
-	cmake . -G Ninja \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+	cmake_build "vidstab" "$BUILD_DIR/vid.stab" true \
 		-DCMAKE_POLICY_DEFAULT_CMP0091=NEW \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DENABLE_SHARED=OFF \
 		-DENABLE_STATIC=ON \
 		-DCMAKE_POLICY_VERSION_MINIMUM=3.5
-
-	ninja -v && ninja install
-	echo "✔ vid.stab built successfully"
 }
 
 build_libklvanc () {
