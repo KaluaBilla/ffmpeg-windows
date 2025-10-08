@@ -48,6 +48,14 @@ jobs:
           echo "$LLVM_MINGW_DIR/bin" >> $GITHUB_PATH
           export PATH="$LLVM_MINGW_DIR/bin:$PATH"
 
+          if [ -x "$LLVM_MINGW_DIR/bin/llvm-dlltool" ]; then
+            echo "llvm-dlltool is executable"
+          else
+            echo "llvm-dlltool is missing or not executable"
+            ls -l "$LLVM_MINGW_DIR/bin"
+            exit 1
+          fi
+
       - name: Install cargo-c
         run: |
           mkdir -p $HOME/.cargo/bin
