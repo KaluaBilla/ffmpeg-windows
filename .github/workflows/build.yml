@@ -17,8 +17,8 @@ jobs:
 
       - name: Install system dependencies and build tools
         run: |
-          sudo apt-get update
-          sudo apt-get install -y mingw-w64 binutils-mingw-w64 build-essential autopoint libglib2.0-dev jq cmake ninja-build make autoconf automake libtool pkg-config texinfo gettext gperf bison flex git xz-utils unzip diffutils file findutils coreutils binutils python3 python3-pip python3-venv pipx subversion libtool-bin nasm yasm
+          sudo apt update
+          sudo apt install -y mingw-w64 llvm binutils-mingw-w64 build-essential autopoint libglib2.0-dev jq cmake ninja-build make autoconf automake libtool pkg-config texinfo gettext gperf bison flex git xz-utils unzip diffutils file findutils coreutils binutils python3 python3-pip python3-venv pipx subversion libtool-bin nasm yasm
 
       - name: Install pipx and meson
         run: |
@@ -34,27 +34,6 @@ jobs:
           toolchain: stable  
           profile: minimal  
           override: true  
-
-      - name: Install LLVM-Mingw
-        run: |
-          LLVM_MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/20250924/llvm-mingw-20250924-ucrt-ubuntu-22.04-x86_64.tar.xz"
-          LLVM_MINGW_DIR="$HOME/llvm-mingw"
-          mkdir -p "$LLVM_MINGW_DIR"
-          curl -L $LLVM_MINGW_URL -o /tmp/llvm-mingw.tar.xz
-          tar -xf /tmp/llvm-mingw.tar.xz -C "$LLVM_MINGW_DIR" --strip-components=1
-
-          find "$LLVM_MINGW_DIR/bin" -type f ! -name 'llvm-dlltool' -delete
-
-          echo "$LLVM_MINGW_DIR/bin" >> $GITHUB_PATH
-          export PATH="$LLVM_MINGW_DIR/bin:$PATH"
-
-          if [ -x "$LLVM_MINGW_DIR/bin/llvm-dlltool" ]; then
-            echo "llvm-dlltool is executable"
-          else
-            echo "llvm-dlltool is missing or not executable"
-            ls -l "$LLVM_MINGW_DIR/bin"
-            exit 1
-          fi
 
       - name: Install cargo-c
         run: |
