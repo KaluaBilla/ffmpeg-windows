@@ -398,6 +398,8 @@ build_openmpt() {
 		--without-sndfile \
 		--without-flac \
 		--without-portaudiocpp \
+		CC=${CC}-posix \
+		CXX=${CXX}-posix \
 		CFLAGS="$CFLAGS" \
 		CXXFLAGS="$CXXFLAGS" \
 		LDFLAGS="$LDFLAGS"
