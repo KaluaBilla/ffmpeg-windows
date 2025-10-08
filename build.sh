@@ -525,7 +525,7 @@ export PREFIX="$PREFIX1"
 build_xavs2
 
 ### Audio codecs
-#build_libgsm #( didnt build )
+build_libgsm
 build_lame
 build_twolame
 build_opus
