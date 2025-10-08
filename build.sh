@@ -619,11 +619,13 @@ find "$PREFIX" -iname "*.pc" -exec sed -i 's/\s*-ldl\b\s*/ /g' {} +
 find "$PREFIX" -iname "*.dll*" -delete
 configure_amf
 configure_nv_headers
+build_sdl
 build_ffmpeg
 
 echo "Build completed successfully"
 
 mkdir -p "${ROOT_DIR}/out"
-cp "${PREFIX}/bin/ffmpeg.exe" "${ROOT_DIR}/out"
-cp "${PREFIX}/bin/ffprobe.exe" "${ROOT_DIR}/out"
+cp "${PREFIX}/bin/ffmpeg.exe" "${ROOT_DIR}/out" || true
+cp "${PREFIX}/bin/ffprobe.exe" "${ROOT_DIR}/out" || true
+cp "${PREFIX}/bin/ffplay.exe" "${ROOT_DIR}/out" || true
 
