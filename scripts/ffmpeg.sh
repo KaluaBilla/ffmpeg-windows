@@ -155,7 +155,7 @@ build_ffmpeg() {
 		--enable-libilbc
 		--enable-libcodec2
 		--enable-libmysofa
-		#--enable-libopenmpt
+		--enable-libopenmpt
 		--enable-libfreetype
 		--enable-libfontconfig
 		--enable-libfribidi
