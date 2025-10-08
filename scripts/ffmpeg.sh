@@ -204,7 +204,7 @@ build_ffmpeg() {
 		--enable-libmodplug
 		--enable-librubberband
 		--enable-libshine
-		#--enable-libklvanc
+		--enable-vapoursynth
 		--enable-liboapv 
 		--enable-mediafoundation
 		--enable-amf
