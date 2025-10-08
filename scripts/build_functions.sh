@@ -1632,27 +1632,16 @@ build_snappy() {
 }
 
 build_avisynth() {
-	echo "[+] Building AviSynth+ for $ARCH..."
-	cd "$BUILD_DIR/AviSynthPlus" || exit 1
-	rm -rf build && mkdir build && cd build
-
 	local simd_option
 	case "$ARCH" in
 		x86|x86_64) simd_option=ON ;;
 		*) simd_option=OFF ;;
 	esac
-
-	cmake ../ \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_SYSTEM_PROCESSOR="$ARCH" \
-		-DCMAKE_INSTALL_PREFIX="$PREFIX" \
-		-DCMAKE_CXX_COMPILER="$CXX_ABS" \
-		-DENABLE_PLUGINS=OFF \
-		-DBUILD_SHARED_LIBS=OFF \
-		-DENABLE_INTEL_SIMD="$simd_option"
-
-	make -j"$(nproc)" && make install
-	echo "✔ AviSynth+ built successfully"
+	cmake_build "AviSynthPlus" "$BUILD_DIR/AviSynthPlus" true \
+	-DENABLE_PLUGINS=OFF \
+	-DBUILD_SHARED_LIBS=OFF \
+	-DCMAKE_SYSTEM_PROCESSOR="$ARCH" \
+	-DENABLE_INTEL_SIMD="$simd_option"
 }
 
 build_lcevcdec() {
