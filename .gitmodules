@@ -1,0 +1,21 @@
+[submodule "downloads/pixman"]
+	path = downloads/pixman
+	url = https://gitlab.freedesktop.org/pixman/pixman.git
+[submodule "downloads/cairo"]
+	path = downloads/cairo
+	url = https://gitlab.freedesktop.org/cairo/cairo.git
+[submodule "downloads/pango"]
+	path = downloads/pango
+	url = https://gitlab.gnome.org/GNOME/pango.git
+[submodule "downloads/librsvg"]
+	path = downloads/librsvg
+	url = https://gitlab.gnome.org/GNOME/librsvg.git
+[submodule "downloads/fontconfig"]
+	path = downloads/fontconfig
+	url = https://gitlab.freedesktop.org/fontconfig/fontconfig.git
+[submodule "downloads/glib"]
+	path = downloads/glib
+	url = https://github.com/GNOME/glib.git
+[submodule "downloads/harfbuzz"]
+	path = downloads/harfbuzz
+	url = https://github.com/harfbuzz/harfbuzz.git
