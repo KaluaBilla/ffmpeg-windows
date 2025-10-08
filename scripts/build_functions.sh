@@ -1645,22 +1645,15 @@ build_avisynth() {
 }
 
 build_lcevcdec() {
-	echo "[+] Building LCEVCdec for $ARCH..."
-	cd "$BUILD_DIR/LCEVCdec" || exit 1
-	rm -rf out && mkdir out && cd out
-
-	cmake -G Ninja .. \
-		"${MINIMAL_CMAKE_FLAGS[@]}" \
+cmake_build "lcevec" "$BUILD_DIR/LCEVCdec" true \
 		-DBUILD_SHARED_LIBS=OFF \
 		-DVN_SDK_EXECUTABLES=OFF \
 		-DVN_SDK_UNIT_TESTS=OFF \
 		-DVN_SDK_BENCHMARK=OFF \
 		-DVN_SDK_DOCS=OFF \
-        -DCMAKE_C_FLAGS="$CFLAGS -msse4.1 -D_WIN32_WINNT=0x0A00" \
-        -DCMAKE_CXX_FLAGS="$CFLAGS -msse4.1 -D_WIN32_WINNT=0x0A00"
-
-	ninja && ninja install
-
+		-DCMAKE_C_FLAGS="$CFLAGS -mssse3 -msse4.1" \
+        -DCMAKE_CXX_FLAGS="$CXXFLAGS -mssse3 -msse4.1"
+		
 	local pc_file="$PREFIX/lib/pkgconfig/lcevc_dec.pc"
 	if [ -f "$pc_file" ]; then
 		local version_line=$(grep -E '^Version:' "$pc_file")
@@ -1668,7 +1661,6 @@ build_lcevcdec() {
 			sed -i 's/^Version:.*/Version: 5.0.1/' "$pc_file"
 		fi
 	fi
-	echo "✔ LCEVCdec built successfully"
 }
 
 build_xeve() {
