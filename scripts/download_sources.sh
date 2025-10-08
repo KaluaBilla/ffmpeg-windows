@@ -119,6 +119,7 @@ declare -A GITHUB_REPOS=(
 	["openapv"]="https://github.com/AcademySoftwareFoundation/openapv.git"
 	["AMF"]="https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git"
 	["SDL"]="https://github.com/libsdl-org/SDL.git|SDL2"
+	["libgsm"]="https://github.com/rhythmcache/libgsm.git"
 	["FFmpeg"]="https://github.com/FFmpeg/FFmpeg.git"
 )
 
@@ -154,7 +155,6 @@ declare -A OTHER_GIT_REPOS=(
     ["bluray"]="https://code.videolan.org/videolan/libbluray.git"
     ["svtav1"]="https://gitlab.com/AOMediaCodec/SVT-AV1.git"
 	["nv-codec-headers"]="https://code.ffmpeg.org/FFmpeg/nv-codec-headers.git"
-	["libgsm"]="https://android.googlesource.com/platform/external/libgsm"
 )
 
 # Extra files
