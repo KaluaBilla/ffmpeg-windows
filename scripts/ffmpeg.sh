@@ -200,7 +200,6 @@ build_ffmpeg() {
 		--enable-amf
 		--enable-sdl2
 		--enable-ffplay
-		"${FLAGS[@]}"
 		"${ASM_FLAG[@]}"
 	)
 
