@@ -619,7 +619,7 @@ build_soxr
 build_fftw
 build_rubberband
 build_zvbi
-#build_openmpt
+build_openmpt
 build_libzmq
 build_libplacebo
 build_librist
