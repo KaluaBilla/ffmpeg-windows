@@ -1799,6 +1799,34 @@ generate_pkgconfig \
     "-I\${includedir}" \
     "" \
     ""
-	
+}
+
+build_sdl() {
+	cmake_build "SDL2" "$BUILD_DIR/SDL" true \
+		"-DSDL_STATIC=ON" \
+		"-DSDL_SHARED=OFF" \
+		"-DSDL_TESTS=OFF" \
+		"-DSDL_INSTALL=ON" \
+		"-DSDL_DUMMYVIDEO=ON" \
+		"-DSDL_OFFSCREEN=ON" \
+		"-DSDL_DIRECTX=ON" \
+		"-DSDL_OPENGL=ON" \
+		"-DSDL_OPENGLES=ON" \
+		"-DSDL_VULKAN=ON" \
+		"-DSDL_RENDER_D3D=ON" \
+		"-DSDL_HIDAPI=ON" \
+		"-DSDL_HIDAPI_JOYSTICK=ON" \
+		"-DSDL_AUDIO=ON" \
+		"-DSDL_DISKAUDIO=ON" \
+		"-DSDL_DUMMYAUDIO=ON" \
+		"-DSDL_WASAPI=ON" \
+		"-DSDL_XINPUT=ON" \
+		"-DSDL_VIRTUAL_JOYSTICK=ON" \
+		"-DSDL_SENSOR=OFF" \
+		"-DSDL_POWER=OFF" \
+		"-DSDL_DBUS=OFF" \
+		"-DSDL_WAYLAND=OFF" \
+		"-DSDL_X11=OFF" \
+		"-DSDL_COCOA=OFF"
 }
 
