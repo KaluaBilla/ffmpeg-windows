@@ -59,6 +59,7 @@ jobs:
         run: |
           rm -rf ${{ github.workspace }}/out
           mkdir -p ${{ github.workspace }}/out
+           rm -rf ${{ github.workspace }}/downloads
           bash ${{ github.workspace }}/build.sh
         env:
           LATEST_GIT: 1
