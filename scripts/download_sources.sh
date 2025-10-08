@@ -118,7 +118,7 @@ declare -A GITHUB_REPOS=(
     ["brotli"]="https://github.com/google/brotli.git"
 	["openapv"]="https://github.com/AcademySoftwareFoundation/openapv.git"
 	["AMF"]="https://github.com/GPUOpen-LibrariesAndSDKs/AMF.git"
-	["libgsm"]="https://github.com/rhythmcache/libgsm.git"
+	["SDL"]="https://github.com/libsdl-org/SDL.git|SDL2"
 	["FFmpeg"]="https://github.com/FFmpeg/FFmpeg.git"
 )
 
@@ -154,6 +154,7 @@ declare -A OTHER_GIT_REPOS=(
     ["bluray"]="https://code.videolan.org/videolan/libbluray.git"
     ["svtav1"]="https://gitlab.com/AOMediaCodec/SVT-AV1.git"
 	["nv-codec-headers"]="https://code.ffmpeg.org/FFmpeg/nv-codec-headers.git"
+	["libgsm"]="https://android.googlesource.com/platform/external/libgsm"
 )
 
 # Extra files
@@ -205,10 +206,21 @@ download_file() {
 	return 0
 }
 
+
 clone_repo_with_lock() {
 	local repo_name="$1"
-	local repo_url="$2"
+	local repo_url_and_branch="$2"
 	local recursive="$3"
+
+	# Parse URL and optional branch
+	local repo_url branch_arg=""
+	if [[ "$repo_url_and_branch" == *"|"* ]]; then
+		repo_url="${repo_url_and_branch%%|*}"
+		local branch="${repo_url_and_branch##*|}"
+		branch_arg="--branch $branch"
+	else
+		repo_url="$repo_url_and_branch"
+	fi
 
 	if [ -d "$repo_name" ]; then
 		echo "Already exists: $repo_name"
@@ -220,9 +232,9 @@ clone_repo_with_lock() {
 	if [ -n "$locked_commit" ]; then
 		echo "Cloning $repo_name (locked to $locked_commit)"
 		if [ "$recursive" = "true" ]; then
-			git clone --recursive "$repo_url" "$repo_name"
+			git clone --recursive $branch_arg "$repo_url" "$repo_name"
 		else
-			git clone "$repo_url" "$repo_name"
+			git clone $branch_arg "$repo_url" "$repo_name"
 		fi
 
 		(cd "$repo_name" && git checkout "$locked_commit")
@@ -230,14 +242,14 @@ clone_repo_with_lock() {
 			echo "Warning: Failed to checkout commit $locked_commit for $repo_name, using HEAD"
 		fi
 	else
-		echo "Cloning $repo_name (latest)"
+		echo "Cloning $repo_name (latest)${branch_arg:+ on branch ${repo_url_and_branch##*|}}"
 		if [ "$repo_name" = "AviSynthPlus" ]; then
-			git clone --recursive "$repo_url" "$repo_name"
+			git clone --recursive $branch_arg "$repo_url" "$repo_name"
 		else
 			if [ "$recursive" = "true" ]; then
-				git clone --depth 1 --recursive "$repo_url" "$repo_name"
+				git clone --depth 1 --recursive $branch_arg "$repo_url" "$repo_name"
 			else
-				git clone --depth 1 "$repo_url" "$repo_name"
+				git clone --depth 1 $branch_arg "$repo_url" "$repo_name"
 			fi
 
 			local current_commit
@@ -249,6 +261,8 @@ clone_repo_with_lock() {
 		fi
 	fi
 }
+
+
 
 download_sources() {
 	mkdir -p "$DOWNLOAD_DIR"
@@ -346,7 +360,7 @@ prepare_sources() {
 	[ ! -d speex ] && tar -xf "${DOWNLOAD_DIR}/speex.tar.gz" && mv "$SPEEX_VERSION" speex
 	[ ! -d libexpat ] && tar -xf "${DOWNLOAD_DIR}/libexpat.tar.gz" && mv "$LIBEXPAT_VERSION" libexpat
 	[ ! -d openmpt ] && tar -xf "${DOWNLOAD_DIR}/openmpt.tar.gz" && mv "$OPENMPT_VERSION"* openmpt
-	#[ ! -d libgsm ] && tar -xf "${DOWNLOAD_DIR}/libgsm.tar.gz" && mv gsm* libgsm
+#	[ ! -d libgsm ] && tar -xf "${DOWNLOAD_DIR}/libgsm.tar.gz" && mv gsm* libgsm
 	[ ! -d libssh ] && tar -xf "${DOWNLOAD_DIR}/libssh.tar.xz" && mv "$LIBSSH_VERSION" libssh
 	[ ! -d xvidcore ] && tar -xf "${DOWNLOAD_DIR}/xvid.tar.gz"
 	[ ! -d libbs2b ] && tar -xf "${DOWNLOAD_DIR}/libbs2b.tar.gz" && mv "$LIBBS2B_VERSION" libbs2b
