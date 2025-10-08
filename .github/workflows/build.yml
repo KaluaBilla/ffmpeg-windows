@@ -63,8 +63,9 @@ jobs:
         env:
           LATEST_GIT: 1
 
-      - name: Upload Windows binaries
+      - name: Upload Windows binaries and logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ffmpeg-${{ matrix.arch }}
-          path: ${{ github.workspace }}/out/*.exe
+          path: ${{ github.workspace }}/out
