@@ -88,7 +88,7 @@ declare -A GITHUB_REPOS=(
 	["aribb24"]="https://github.com/nkoriyama/aribb24.git"
 	["uavs3d"]="https://github.com/uavs3/uavs3d.git"
 	["vvenc"]="https://github.com/fraunhoferhhi/vvenc.git"
-	["vapoursynth"]="https://github.com/rhythmcache/vapoursynth.git"
+	["vapoursynth"]="https://github.com/vapoursynth/vapoursynth.git"
 	["lensfun"]="https://github.com/lensfun/lensfun.git"
 	["game-music-emu"]="https://github.com/libgme/game-music-emu.git"
 	["highway"]="https://github.com/google/highway.git"
@@ -161,6 +161,8 @@ declare -A OTHER_GIT_REPOS=(
 declare -A EXTRA_FILES=(
 	["uavs3d_cmakelists"]="https://raw.githubusercontent.com/rhythmcache/uavs3d/aeaebebed091e8ae9a08bc9f7054273c2e005d27/source/CMakeLists.txt"
 	["riscv64_config_sub"]="https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.sub"
+	["meson.build.vsynth"]="https://raw.githubusercontent.com/rhythmcache/vapoursynth/master/meson.build"
+	["meson.options.vsynth"]="https://raw.githubusercontent.com/rhythmcache/vapoursynth/master/meson.options"
 )
 
 # SVN repo
@@ -305,6 +307,8 @@ download_sources() {
 
 		download_file "${EXTRA_FILES[uavs3d_cmakelists]}" "uavs3d_cmakelists.txt" &
 		download_file "${EXTRA_FILES[riscv64_config_sub]}" "riscv64_config_sub" &
+		download_file "${EXTRA_FILES[meson.build.vsynth]}" "meson.build.vsynth" &
+		download_file "${EXTRA_FILES[meson.options.vsynth]}" "meson.options.vsynth" &
 		wait
 	}
 
@@ -418,6 +422,11 @@ apply_extra_setup() {
 
 	if [ "$ARCH" = "riscv64" ] && [ -d "$arch_build_dir/davs2" ] && [ -f "${DOWNLOAD_DIR}/riscv64_config_sub" ]; then
 		cp "${DOWNLOAD_DIR}/riscv64_config_sub" "$arch_build_dir/davs2/build/linux/config.sub"
+	fi
+
+    if [ -d "$BUILD_DIR/vapoursynth" ]; then
+	    cp "${DOWNLOAD_DIR}/meson.build.vsynth" "$BUILD_DIR/vapoursynth/meson.build"
+	    cp "${DOWNLOAD_DIR}/meson.options.vsynth" "$BUILD_DIR/vapoursynth/meson.options"
 	fi
 
 }
